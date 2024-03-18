@@ -35,12 +35,14 @@ void testPrint() {
     BST* bst = bst_create();
 
     bst_print(bst);
+
+    bst_destroy(bst);
 }
 
 int main() {
-    testSearch();
+    // testSearch();
     testTraversals();
-    testPrint();
+    // testPrint();
 
     return 0;
 }

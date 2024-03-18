@@ -39,10 +39,25 @@ Node* makeSampleTree() {
 BST* bst_create() {
     BST* bst = malloc(sizeof(BST));
 
-    // bst->root = NULL;
-    bst->root = makeSampleTree();
+    bst->root = NULL;
+    // bst->root = makeSampleTree();
 
     return bst;
+}
+
+void bst_destroyRecur(Node* root){
+    if(root == NULL){
+        return;
+    }
+
+    bst_destroyRecur(root->left);
+    bst_destroyRecur(root->right);
+    free(root);
+}
+
+void bst_destroy(BST* bst){
+    bst_destroyRecur(bst->root);
+    free(bst);
 }
 
 bool bst_searchRecur(Node* node, Element key) {
@@ -59,8 +74,36 @@ bool bst_searchRecur(Node* node, Element key) {
     return bst_searchRecur(node->right, key);
 }
 
+// esconder o nó
 bool bst_search(BST* bst, Element key) {
     return bst_searchRecur(bst->root, key);
+}
+
+void bst_insert (BST* bst, Element key){
+    if(bst->root == NULL){
+        return;
+    }
+
+    Node* parent = NULL;
+    Node* cur = bst->root;
+    while(cur!= NULL){
+        if(cur->key == key){
+            return;
+        }
+        if(key < cur->key){
+            parent = cur;
+            cur = cur->left;
+        } else if(key>cur->key){
+            parent = cur;
+            cur = cur->right;
+        }
+    }
+
+    if(key < parent-> key){
+        parent->left = createNode(key);
+    } else{
+        parent->right = createNode(key);
+    }
 }
 
 void bst_printInOrderRecur(Node* node) {
@@ -123,4 +166,25 @@ void bst_printDiagram(Node* node, int level) {
 
 void bst_print(BST* bst) {
   bst_printDiagram(bst->root, 0);
+}
+
+/**
+* Caso base 1: árvore vazia --- insere o nó
+* Caso base 2: o valor já está na árvore --- não insere
+* Caso recursivo 1: se a chave for menor --- faça recursão a esq
+* Caso recursivo 2: se a chave for menor --- faça recursão a dir
+**/
+
+Node* bst_insertRecur(Node* node, Element key){
+    if(node == NULL){
+        return createNode(key);
+    }
+
+    if(node->key > key){
+       node->left = bst_insertRecur(node->left, key);
+    } else if(key > node->key){
+        node->right = bst_insertRecur(node->right, key);
+    }
+
+    return node;
 }
